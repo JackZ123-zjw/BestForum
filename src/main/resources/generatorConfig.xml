@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="BestForum" targetRuntime="MyBatis3">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" 
+                        connectionURL="jdbc:mysql://localhost:3306/BestForum"
+                        userId="root"
+                        password="password">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.JackZ.BestForum.model" targetProject="src/main/java">
+            <property name="enableSubPackage" value="true"/>
+            <property name="" value=""/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper.generated" targetProject="src/main/resources">
+
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.JackZ.BestForum.mapper.generated" targetProject="src/main/java">
+
+        </javaClientGenerator>
+        <table tableName="user" mapperName="IUserMapper" domainObjectName="User"></table>
+        <table tableName="user_information" mapperName="IUserInformationMapper" domainObjectName="UserInformation"></table>
+        <table tableName="post" mapperName="IPostMapper" domainObjectName="Post"></table>
+        <table tableName="notification" mapperName="INotificationMapper" domainObjectName="Notification"></table>
+        <table tableName="comment" mapperName="ICommentMapper" domainObjectName="Comment"></table>
+        <table tableName="news" mapperName="INewsMapper" domainObjectName="News"></table>
+        <table tableName="advertisement" mapperName="IAdvertisementMapper" domainObjectName="Advertisement"></table>
+    </context>
+</generatorConfiguration>
