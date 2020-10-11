@@ -1,9 +1,13 @@
 package com.JackZ.BestForum.enums;
 
-public interface BaseEnum {
+/**
+ * @author Jack Z
+ * @version 2020-10-10
+ */
+public interface BaseEnum{
 
     Integer getCode();
+
     String getName();
-    Integer getCodeByName(String name);
-    String getNameByCode(Integer code);
+
 }

@@ -1,5 +1,9 @@
 package com.JackZ.BestForum.enums;
 
+/**
+ * @author JackZ
+ * @version 2020-10-10
+ */
 public enum PermissionEnum implements BaseEnum {
 
     NO_PERMISSION(0, "NO PERMISSION"),
@@ -24,8 +28,7 @@ public enum PermissionEnum implements BaseEnum {
         return this.name;
     }
 
-    @Override
-    public Integer getCodeByName(String name) {
+    public static Integer getCodeByName(String name) {
         for (PermissionEnum e : PermissionEnum.values()) {
             if (e.getName().equals(name)) {
                 return e.getCode();
@@ -34,11 +37,19 @@ public enum PermissionEnum implements BaseEnum {
         return null;
     }
 
-    @Override
-    public String getNameByCode(Integer code) {
+    public static String getNameByCode(Integer code) {
         for (PermissionEnum e : PermissionEnum.values()) {
             if (e.getCode() == code) {
                 return e.getName();
+            }
+        }
+        return null;
+    }
+
+    public static PermissionEnum getPermissionByCode(Integer code) {
+        for (PermissionEnum e : PermissionEnum.values()) {
+            if (e.getCode() == code) {
+                return e;
             }
         }
         return null;

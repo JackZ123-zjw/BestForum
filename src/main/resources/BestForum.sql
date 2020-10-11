@@ -79,7 +79,7 @@ CREATE TABLE `post` (
     `like_count` INT(11) NOT NULL DEFAULT '0' COMMENT '点赞数',
     `view_count` INT(11) NOT NULL DEFAULT '0' COMMENT '浏览数',
     `gmt_latest_comment` TIMESTAMP NOT NULL,
-    `status` INT(11) NOT NULL DEFAULT '0' COMMENT '1加精，2置顶，3加精置顶',
+    `status` INT(1) NOT NULL DEFAULT '0' COMMENT '1加精，2置顶，3加精置顶',
     `column` INT(3) DEFAULT '2' COMMENT '专栏编号',
     `permission` INT(3) DEFAULT '0' COMMENT '授权信息',
     PRIMARY KEY (`id`),

@@ -31,8 +31,7 @@ public enum UserPriorityEnum implements BaseEnum {
         return this.name;
     }
 
-    @Override
-    public Integer getCodeByName(String name) {
+    public static Integer getCodeByName(String name) {
         for (UserPriorityEnum e : UserPriorityEnum.values()) {
             if (e.getName().equals(name)) {
                 return e.getCode();
@@ -41,8 +40,7 @@ public enum UserPriorityEnum implements BaseEnum {
         return null;
     }
 
-    @Override
-    public String getNameByCode(Integer code) {
+    public static String getNameByCode(Integer code) {
         for (UserPriorityEnum e : UserPriorityEnum.values()) {
             if (e.getCode() == code) {
                 return e.getName();
@@ -51,4 +49,12 @@ public enum UserPriorityEnum implements BaseEnum {
         return null;
     }
 
+    public static UserPriorityEnum getUsrPriorityByCode(Integer code) {
+        for (UserPriorityEnum e : UserPriorityEnum.values()) {
+            if (e.getCode() == code) {
+                return e;
+            }
+        }
+        return null;
+    }
 }

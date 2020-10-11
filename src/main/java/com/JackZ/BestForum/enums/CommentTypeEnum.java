@@ -1,41 +1,30 @@
 package com.JackZ.BestForum.enums;
 
-/**
- *
- * @author JackZ
- * @version 2020-10-10
- */
-public enum ColumnEnum implements BaseEnum {
+public enum CommentTypeEnum implements BaseEnum {
 
-    ASK(1, "CONSULTING"),
-    SHARE(2, "SHARE EXPERIENCE"),
-    SUGGEST(3, "SUGGESTION"),
-    CHAT(4, "CHAT FREELY"),
-    NOTICE(5, "NOTICE"),
-    NEWS(6, "NEWS"),
-    OTHER(9, "OTHER");
-
+    REPLY_POST(1, "Reply Post"),
+    REPLY_COMMENT(2, "ReplyComment");
 
     private Integer code;
     private String name;
 
-    ColumnEnum(Integer code, String name) {
+    CommentTypeEnum(Integer code, String name) {
         this.code = code;
         this.name = name;
     }
 
     @Override
     public Integer getCode() {
-        return this.code;
+        return null;
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return null;
     }
 
     public static Integer getCodeByName(String name) {
-        for (ColumnEnum e : ColumnEnum.values()) {
+        for (CommentTypeEnum e : CommentTypeEnum.values()) {
             if (e.getName().equals(name)) {
                 return e.getCode();
             }
@@ -44,7 +33,7 @@ public enum ColumnEnum implements BaseEnum {
     }
 
     public static String getNameByCode(Integer code) {
-        for (ColumnEnum e : ColumnEnum.values()) {
+        for (CommentTypeEnum e : CommentTypeEnum.values()) {
             if (e.getCode() == code) {
                 return e.getName();
             }
@@ -52,13 +41,12 @@ public enum ColumnEnum implements BaseEnum {
         return null;
     }
 
-    public static ColumnEnum getColumnByCode(Integer code) {
-        for (ColumnEnum e : ColumnEnum.values()) {
+    public static CommentTypeEnum getCommentTypeByCode(Integer code) {
+        for (CommentTypeEnum e : CommentTypeEnum.values()) {
             if (e.getCode() == code) {
                 return e;
             }
         }
         return null;
     }
-
 }
