@@ -1,5 +1,5 @@
 --version 8.0.20
-Host: localhost
+--Host: localhost
 
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -21,25 +21,14 @@ CREATE TABLE `user` (
     `weibo_account_id` VARCHAR(100) DEFAULT NULL COMMENT '微博账号',
     `nickname` VARCHAR(50) DEFAULT NULL COMMENT '用户昵称',
     `token` CHAR(36) DEFAULT NULL COMMENT '用户唯一识别码',
-    `gmt_create` TIMESTAMP NOT NULL,
-    `gmt_modified` TIMESTAMP NOT NULL,
+    `gmt_create` BIGINT(24) NOT NULL,
+    `gmt_modified` BIGINT(24) NOT NULL,
     `avatar_url` VARCHAR(255) DEFAULT '/images/default_avatar.png' COMMENT '头像',
     `phone` VARCHAR(16) DEFAULT NULL COMMENT '手机号码',
     `password` VARCHAR(64) NOT NULL COMMENT '密码',
+    `priority` INT(1) DEFAULT 0 COMMENT '用户等级',
+    `score` INT(11) DEFAULT 0 COMMENT '用户积分',
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- user_priority
--- 用户等级信息和分数
-
-CREATE TABLE `user_priority` (
-    `user_id` BIGINT(20) NOT NULL,
-    `rank` INT(1) DEFAULT '0' COMMENT '用户等级，0~6',
-    `score` INT(11) DEFAULT '0' COMMENT '用户分数',
-    CONSTRAINT `user_rank` FOREIGN KEY `user_priority` (`user_id`)
-                            REFERENCES `user` (`id`)
-                            ON DELETE CASCADE
-                            ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- user_information
@@ -72,16 +61,17 @@ CREATE TABLE `post` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(120) NOT NULL COMMENT '帖子标题',
     `content` TEXT COMMENT '帖子内容',
-    `gmt_create` TIMESTAMP NOT NULL,
-    `gmt_modified` TIMESTAMP NOT NULL,
+    `gmt_create` BIGINT(24) NOT NULL,
+    `gmt_modified` BIGINT(24) NOT NULL,
     `creator_id` BIGINT(20) NOT NULL COMMENT '发帖者id',
-    `comment_count` INT(11) NOT NULL DEFAULT '0' COMMENT '评论数',
-    `like_count` INT(11) NOT NULL DEFAULT '0' COMMENT '点赞数',
-    `view_count` INT(11) NOT NULL DEFAULT '0' COMMENT '浏览数',
-    `gmt_latest_comment` TIMESTAMP NOT NULL,
+    `comment_count` INT(11) NOT NULL DEFAULT 0 COMMENT '评论数',
+    `like_count` INT(11) NOT NULL DEFAULT 0 COMMENT '点赞数',
+    `view_count` INT(11) NOT NULL DEFAULT 0 COMMENT '浏览数',
+    `gmt_latest_comment` BIGINT(24) NOT NULL,
     `status` INT(1) NOT NULL DEFAULT '0' COMMENT '1加精，2置顶，3加精置顶',
-    `column` INT(3) DEFAULT '2' COMMENT '专栏编号',
+    `columnname` INT(3) DEFAULT '2' COMMENT '专栏编号',
     `permission` INT(3) DEFAULT '0' COMMENT '授权信息',
+    `tags` VARCHAR(256) COMMENT '标签，用，分隔',
     PRIMARY KEY (`id`),
     CONSTRAINT `user_post` FOREIGN KEY `post` (`creator_id`)
                             REFERENCES `user` (`id`)
@@ -89,17 +79,6 @@ CREATE TABLE `post` (
                             ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- post_tag
--- 帖子标签
-
-CREATE TABLE `post_tags` (
-    `post_id` BIGINT(20) NOT NULL,
-    `tag` VARCHAR(20) NOT NULL,
-    CONSTRAINT `post_tags1` FOREIGN KEY `post_tags` (`post_id`)
-                            REFERENCES `post` (`id`)
-                            ON DELETE CASCADE
-                            ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- user_favourite
 -- 用户收藏表
 
@@ -121,9 +100,11 @@ CREATE TABLE `notification` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `notifier_id` BIGINT(20) NOT NULL COMMENT '发送者id',
     `receiver_id` BIGINT(20) NOT NULL COMMENT '接受者通知',
-    `type` INT(1) NOT NULL COMMENT '1回复，2回复评论，3收藏，4点赞',
-    `gmt_create` TIMESTAMP NOT NULL,
-    `status` INT(1) NOT NULL DEFAULT '0' COMMENT '0未读，1已读',
+    `outer_id` BIGINT(20) NOT NULL,
+    `outer_name` VARCHAR(256) NOT NULL,
+    `notificationtype` INT(1) NOT NULL COMMENT '1回复，2回复评论，3收藏，4点赞',
+    `gmt_create` BIGINT(24) NOT NULL,
+    `status` INT(1) NOT NULL DEFAULT 0 COMMENT '0未读，1已读',
     PRIMARY KEY (`id`),
     CONSTRAINT `user_noti1` FOREIGN KEY `notification` (`notifier_id`)
                             REFERENCES `user` (`id`)
@@ -140,10 +121,10 @@ CREATE TABLE `notification` (
 
 CREATE TABLE `thumb` (
     `target_id` BIGINT(20) NOT NULL COMMENT '点赞目标',
-    `type` INT(11) NOT NULL COMMENT '回复目标类型',
+    `thumbtype` INT(11) NOT NULL COMMENT '回复目标类型',
     `liker_id` BIGINT(20) NOT NULL COMMENT '点赞者id',
-    `gmt_craete` TIMESTAMP NOT NULL,
-    `gmt_modified` TIMESTAMP NOT NULL,
+    `gmt_craete` BIGINT(24) NOT NULL,
+    `gmt_modified` BIGINT(24) NOT NULL,
     CONSTRAINT `thumb_sender` FOREIGN KEY `thumb` (`liker_id`)
                                REFERENCES `user` (`id`)
                                ON DELETE CASCADE
@@ -159,14 +140,14 @@ CREATE TABLE `thumb` (
 
 CREATE TABLE `comment` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-    `type` INT(11) NOT NULL COMMENT '1回复post,2回复评论',
+    `thumbtype` INT(11) NOT NULL COMMENT '1回复post,2回复评论',
     `parent_id` BIGINT(20) NOT NULL COMMENT '所回复的post或评论的id',
     `commentator` BIGINT(20) NOT NULL COMMENT '评论人',
-    `gmt_create` TIMESTAMP NOT NULL,
-    `gmt_modified` TIMESTAMP NOT NULL,
-    `like_count` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '点赞数',
+    `gmt_create` BIGINT(24) NOT NULL,
+    `gmt_modified` BIGINT(24) NOT NULL,
+    `like_count` BIGINT(20) NOT NULL DEFAULT 0 COMMENT '点赞数',
     `content` VARCHAR(1024) NOT NULL COMMENT '回复内容',
-    `comment_count` int(11) NOT NULL DEFAULT '0',
+    `comment_count` int(11) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     CONSTRAINT `comment_user` FOREIGN KEY `comment` (`commentator`)
                               REFERENCES `user` (`id`)
@@ -185,52 +166,30 @@ CREATE TABLE `news` (
     `source` VARCHAR(16) NOT NULL COMMENT '来源',
     `link` VARCHAR(64) NOT NULL COMMENT '链接',
     `pub_date` TIMESTAMP NOT NULL COMMENT '发布日期',
-    `view_count` INT(11) NOT NULL DEFAULT '0',
-    `like_count` INT(11) NOT NULL DEFAULT '0',
-    `comment_count` INT(11) NOT NULL DEFAULT '0',
-    `gmt_latest_comment` TIMESTAMP NOT NULL,
-    `status` INT(2) NOT NULL DEFAULT '1' COMMENT '状态',
-    `column` INT(2) NOT NULL DEFAULT '0' COMMENT '专栏',
-    `gmt_craete` TIMESTAMP NOT NULL,
-    `gmt_modified` TIMESTAMP NOT NULL,
+    `view_count` INT(11) NOT NULL DEFAULT 0,
+    `like_count` INT(11) NOT NULL DEFAULT 0,
+    `comment_count` INT(11) NOT NULL DEFAULT 0,
+    `gmt_latest_comment` BIGINT(24) NOT NULL,
+    `status` INT(2) NOT NULL DEFAULT 1 COMMENT '状态',
+    `columnname` INT(2) NOT NULL DEFAULT 0 COMMENT '专栏',
+    `gmt_craete` BIGINT(24) NOT NULL,
+    `gmt_modified` BIGINT(24) NOT NULL,
+    `tags` VARCHAR(256),
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- image_urls
--- 新闻图片地址
-
-CREATE TABLE `image_urls` (
-    `news_id` BIGINT(20) NOT NULL,
-    `image_url` VARCHAR(128) DEFAULT NULL COMMENT '图片url',
-    CONSTRAINT `news_image` FOREIGN KEY `image_urls` (`news_id`)
-                            REFERENCES `news` (`id`)
-                            ON DELETE CASCADE
-                            ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- news_tags
--- 新闻标签
-
-CREATE TABLE `news_tags` (
-    `news_id` BIGINT(20) NOT NULL,
-    `tag` VARCHAR(20) DEFAULT NULL COMMENT '新闻标签',
-    CONSTRAINT `news_tag` FOREIGN KEY `news_tags` (`news_id`)
-                          REFERENCES `news` (`id`)
-                          ON DELETE CASCADE
-                          ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
+-- advertisement
+-- 新闻
 
 CREATE TABLE `advertisement` (
     `id` BIGINT(11) NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(256) DEFAULT NULL COMMENT '广告标题',
     `url` VARCHAR(512) DEFAULT NULL COMMENT '广告链接',
     `image` VARCHAR(256) DEFAULT NULL COMMENT '广告图片',
-    `gmt_start` TIMESTAMP NOT NULL,
-    `gmt_end` TIMESTAMP NOT NULL,
-    `gmt_create` TIMESTAMP NOT NULL,
-    `gmt_modified` TIMESTAMP NOT NULL,
+    `gmt_start` BIGINT(24) NOT NULL,
+    `gmt_end` BIGINT(24) NOT NULL,
+    `gmt_create` BIGINT(24) NOT NULL,
+    `gmt_modified` BIGINT(24) NOT NULL,
     `status` INT(11) NOT NULL,
     `position` VARCHAR(10) NOT NULL,
     PRIMARY KEY (`id`)
