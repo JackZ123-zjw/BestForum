@@ -1,0 +1,5 @@
+开发语言:javascript,php,css,html,html5,java,node.js,python,c++,c,golang,objective-c,typescript,shell,swift,c#,sass,ruby,bash,less,asp.net,lua,scala,coffeescript,actionscript,rust,erlang,perl
+平台框架:laravel,spring,express,django,flask,yii,ruby-on-rails,tornado,koa,struts
+服务器:linux,nginx,docker,apache,ubuntu,centos,缓存 tomcat,负载均衡器,unix,hadoop,windows-server
+数据库:mysql,redis,mongodb,sql,oracle,nosql memcached,sqlserver,postgresql,sqlite
+开发工具:git,github,visual-studio-code,vim,sublime-text,xcode intellij-idea,eclipse,maven,ide,svn,visual-studio,atom emacs,textmate,hg

@@ -64,12 +64,16 @@ public class PostService {
      * @param id
      * @return
      */
-    public Post getPostById(Long id) {
+    public PostDTO getPostById(Long id) {
         Post post = iPostMapper.selectByPrimaryKey(id);
         if (post == null) {
             throw new CustomisedException(CustomisedErrorCode.POST_NOT_FOUND);
         }
-        return post;
+        PostDTO postDTO = new PostDTO();
+        BeanUtils.copyProperties(post, postDTO);
+        User user = iUserMapper.selectByPrimaryKey(post.getCreatorId());
+        postDTO.setUser(user);
+        return postDTO;
     }
 
     public List<Post> getPostByCreator(Long creatorId) {
@@ -152,6 +156,13 @@ public class PostService {
         return paginationDTO;
     }
 
+    /**
+     * 列出同一用户下的帖子
+     * @param userId
+     * @param page
+     * @param size
+     * @return
+     */
     public PaginationDTO<PostDTO> listByUserId(Long userId, Integer page, Integer size) {
         PaginationDTO<PostDTO> paginationDTO = new PaginationDTO<>();
 
@@ -175,6 +186,11 @@ public class PostService {
         return paginationDTO;
     }
 
+    /**
+     * 列出相关的帖子
+     * @param postDTO
+     * @return
+     */
     public List<PostDTO> selectRelated(PostDTO postDTO) {
         String tags = postDTO.getTags();
         tags = TagAndSearchUtils.trimSearch(tags);
